@@ -18,4 +18,5 @@ jobs:
         env:
           SITES_GIT_TOKEN: ${{ secrets.SITES_GIT_TOKEN }}
           SITES_GIT_REMOTE: https://git.chatgpt-team.site/a62f1c79-eda4-4f24-9789-1edcb27bf8f0/appgprj_6a5063470b688191ba6d18599cf6dffa.git
-        run: git -c http.extraHeader="Authorization: Bearer $SITES_GIT_TOKEN" push "$SITES_GIT_REMOTE" dd9d0bc3008cd48ce29aa2b76a3c62097f87b696:main
+        run: |
+          git -c http.extraHeader="Authorization: Bearer $SITES_GIT_TOKEN" push "$SITES_GIT_REMOTE" dd9d0bc3008cd48ce29aa2b76a3c62097f87b696:main
