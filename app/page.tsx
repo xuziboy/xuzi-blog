@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FormEvent } from "react";
+import type { FormEvent, MouseEvent } from "react";
 
 const articles = [
   {
@@ -11,6 +11,7 @@ const articles = [
     date: "2026.07.24",
     readTime: "7 分钟",
     featured: true,
+    detail: true,
   },
   {
     number: "02",
@@ -52,10 +53,26 @@ const articles = [
 
 export default function Home() {
   const [subscribed, setSubscribed] = useState(false);
+  const [readingOpen, setReadingOpen] = useState(false);
 
   function handleSubscribe(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubscribed(true);
+  }
+
+  function openArticle(event: MouseEvent<HTMLAnchorElement>) {
+    event.preventDefault();
+    setReadingOpen(true);
+    window.requestAnimationFrame(() => {
+      document.getElementById("article-01")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  function closeArticle() {
+    setReadingOpen(false);
+    window.requestAnimationFrame(() => {
+      document.getElementById("articles")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   return (
@@ -135,25 +152,33 @@ export default function Home() {
               </div>
               <div className="article-body">
                 <h3>
-                  <a href={"#article-" + article.number}>
-                    {article.title}
-                    <span className="sr-only">，阅读摘要</span>
-                  </a>
+                  {article.detail ? (
+                    <a href="#article-01" onClick={openArticle}>
+                      {article.title}
+                      <span className="sr-only">，阅读全文</span>
+                    </a>
+                  ) : (
+                    <span>{article.title}</span>
+                  )}
                 </h3>
                 <p>{article.excerpt}</p>
               </div>
               <div className="article-footer">
                 <span>{article.date}</span>
                 <span>{article.readTime}</span>
+                {article.detail && <span className="article-read-more">阅读全文</span>}
                 <span className="article-arrow" aria-hidden="true">↗</span>
               </div>
             </article>
           ))}
         </div>
 
-        <article className="reading-section" id="article-01">
+        {readingOpen && <article className="reading-section" id="article-01">
           <div className="reading-heading">
-            <p className="eyebrow">Reading note / 01</p>
+            <div className="reading-heading-top">
+              <p className="eyebrow">Reading note / 01</p>
+              <button className="close-reading" type="button" onClick={closeArticle}>收起全文 ↑</button>
+            </div>
             <p className="reading-meta">《明朝那些事》 · 读后感 · 约 800 字</p>
           </div>
           <div className="reading-content">
@@ -177,7 +202,7 @@ export default function Home() {
               读完明朝，我对“成败”这两个字多了一点克制。时代很大，个人很小，但小并不意味着无关紧要。我们每天写下的代码、做出的决定、对同事和家人的一次耐心回应，都是在自己的位置上参与历史。未必会留下名字，却会改变身边的一小段现实。愿我以后面对复杂的事情时，少一点急于证明，多一点耐心把事情做好；在属于自己的那一页里，尽量写得诚恳、清醒，也不辜负当下。
             </p>
           </div>
-        </article>
+        </article>}
       </section>
 
       <section className="about-section" id="about">
